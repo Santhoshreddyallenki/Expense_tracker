@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "../ui/button"
 import {  useForm } from "react-hook-form"
 import { z } from "zod"
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "../ui/form"
+import { Form, FormField, FormItem, FormLabel, FormControl,  FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
 
 import {createUserWithEmailAndPassword} from "firebase/auth"
@@ -44,12 +44,12 @@ const RegisterForm = () => {
       }
   return (
     <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 text-start">
       <FormField
         control={form.control}
         name="email"
         render={({ field }) => (
-          <FormItem>
+          <FormItem >
             <FormLabel>Email</FormLabel>
             <FormControl>
               <Input placeholder="" {...field}  />
@@ -82,7 +82,7 @@ const RegisterForm = () => {
       </FormItem>
     )}
   />
-      <Button type="submit">Submit</Button>
+      <Button className="w-full" type="submit">Submit</Button>
     </form>
   </Form>
   )

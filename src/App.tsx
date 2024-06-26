@@ -1,21 +1,9 @@
-// import React from "react"
-// import { useState } from "react"
-// import { Eye, EyeOff } from "lucide-react"
-import { auth } from "./lib/firebase"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  // CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./components/ui/card"
-// import { Input } from "./components/ui/input"
-// import { Button } from "./components/ui/button"
+import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import './App.css'
 
-
-import RegisterForm from "./components/molecules/registerForm"
+import Register from './pages/register'
+import Home from './pages/home'
+import Login from './pages/login'
 
 
 function App() {
@@ -34,18 +22,14 @@ function App() {
 //  }
 
   return (
-    <main className="flex h-screen flex-col justify-center items-center">
-      <Card className="h-13 w-1/3">
-        <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Enter you Email to Login</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <RegisterForm></RegisterForm>
-        </CardContent>
-       
-      </Card>
-    </main>
+    <BrowserRouter>
+    <Routes>
+      <Route index element={<Home/>}></Route>
+      <Route path="/login" element={<Login/>}></Route>
+      <Route path="/register" element={<Register/>}></Route>
+    </Routes>
+    </BrowserRouter>
+  // <Register></Register>
   )
 }
 
