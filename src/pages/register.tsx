@@ -1,5 +1,4 @@
 import RegisterForm from "../components/molecules/registerForm"
-
 import {
   Card,
   CardContent,
@@ -19,7 +18,6 @@ const Register = () => {
       <CardContent>
         <RegisterForm></RegisterForm>
       </CardContent>
-     
     </Card>
   </main>
   )

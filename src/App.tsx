@@ -1,25 +1,10 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
-import './App.css'
-
 import Register from './pages/register'
 import Home from './pages/home'
 import Login from './pages/login'
 
 
 function App() {
-
-  
- 
-//  const [passwordVisibility, setPasswordVisibility] = useState("password")
-
-//  function showPassword(passwordVisibility){
-//   if( passwordVisibility=="text"){
-//     setPasswordVisibility("password")
-//   }else{
-//     setPasswordVisibility("text")
-//   }
-
-//  }
 
   return (
     <BrowserRouter>
@@ -29,7 +14,6 @@ function App() {
       <Route path="/register" element={<Register/>}></Route>
     </Routes>
     </BrowserRouter>
-  // <Register></Register>
   )
 }
 
