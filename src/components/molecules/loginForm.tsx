@@ -6,12 +6,11 @@ import { useState } from "react";
 import { z } from "zod";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../lib/firebase";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
  
 const formSchema = z.object({
-  fullname: z.string().min(2, "First name must be at least 2 characters long"),
   email: z
     .string()
     .email("Invalid email address. Please enter a valid email address in the format example@example.com")
@@ -19,61 +18,40 @@ const formSchema = z.object({
   password: z.string().regex(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{10,}$/, {
     message: "Your password should be at least one lowercase letter, one uppercase letter, one digit, one special character (!, @, #, $, %, ^, &, *) and minimum length of 10 characters",
   }),
-  confirmPassword: z.string(),
-}).superRefine(({ confirmPassword, password }, ctx) => {
-  if (confirmPassword !== password) {
-    ctx.addIssue({
-      code: "custom",
-      message: "The passwords did not match",
-      path: ["confirmPassword"],
-    });
-  }
 });
  
-const RegisterForm = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null); // Update the type to string | null
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
- 
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [confirmPasswordVisibility, setConfirmPasswordVisibility] = useState(false);
  
   async function onSubmit(values: z.infer<typeof formSchema>) {
-await createUserWithEmailAndPassword(auth, values.email, values.password);
-    console.log("user created");
-    // redirect("/login")
-    // <Navigate to="/login" replace={true} />
-    navigate("/login");
+await signInWithEmailAndPassword(auth, values.email, values.password)
+      .then((UserCredential) => {
+        const user = UserCredential.user;
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setError(`${errorCode}: ${errorMessage}`); // Update the error state
+      });
   }
  
   function togglePasswordVisibility() {
     setPasswordVisibility((prev) => !prev);
   }
  
-  function toggleConfirmPasswordVisibility() {
-    setConfirmPasswordVisibility((prev) => !prev);
-  }
- 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 text-start">
-        <FormField control={form.control} name="fullname" render={({ field }) => (
-          <FormItem>
-            <FormLabel>Full Name</FormLabel>
-            <FormControl>
-              <Input placeholder="Full Name" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )} />
-        
         <FormField control={form.control} name="email" render={({ field }) => (
           <FormItem>
             <FormLabel>Email</FormLabel>
@@ -83,7 +61,6 @@ await createUserWithEmailAndPassword(auth, values.email, values.password);
             <FormMessage />
           </FormItem>
         )} />
-        
         <FormField control={form.control} name="password" render={({ field }) => (
           <FormItem>
             <FormLabel>Password</FormLabel>
@@ -100,28 +77,15 @@ await createUserWithEmailAndPassword(auth, values.email, values.password);
             <FormMessage />
           </FormItem>
         )} />
-        
-        <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-          <FormItem>
-            <FormLabel>Confirm Password</FormLabel>
-            <FormControl>
-              <div className="relative">
-                <Input placeholder="Confirm Password" {...field} type={confirmPasswordVisibility ? "text" : "password"} />
-                {confirmPasswordVisibility ? (
-                  <EyeOff className="absolute right-2 top-2 cursor-pointer select-none" onClick={toggleConfirmPasswordVisibility} />
-                ) : (
-                  <Eye className="absolute right-2 top-2 cursor-pointer select-none" onClick={toggleConfirmPasswordVisibility} />
-                )}
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )} />
-        
-        <Button className="w-full" type="submit">Submit</Button>
+        {error && (
+          <div className="text-red-500">
+            {error}
+          </div>
+        )}
+        <Button className="w-full" type="submit">Login</Button>
       </form>
     </Form>
   );
-}
+};
  
-export default RegisterForm;
+export default LoginForm;
